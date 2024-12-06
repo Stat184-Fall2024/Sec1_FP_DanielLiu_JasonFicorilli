@@ -1,5 +1,5 @@
 ---
-title: "Covid-19 Vaccine Efficacy"
+title: "Title"
 format: 
   html:
     include-in-header: 
@@ -21,125 +21,16 @@ editor: visual
 #| include: false
 
 library(tidyverse)
-url <- "https://www.openintro.org/data/csv/simpsons_paradox_covid.csv"
-data <- read.csv(url)
+library (readr)
+
+urlfile = "https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/global_health.csv"
+
+data <- read_csv(url(urlfile))
 ```
-
-# Covid Mortality
-
-![](https://www.umw.edu/covidcourse/wp-content/uploads/sites/51/2020/05/COVID-19_header.jpg){fig-alt="Covid-19 Graphic, University of Mary Washington" width="800"}
-
-The year is 2021. Now that millions of people have been vaccinated and subsequently infected by COVID, the FDA is re-investigating the efficacy of the vaccine. As an analyst at the FDA, Althea the Third of Saint John is tasked with answering the question - does the COVID vaccine reduce the mortality rate of COVID infection?
-
-Notably, she will use Quarto to help document her findings, as well as provide a transparent way for her colleagues to edit information if necessary.
-
-## Exploratory data analysis
-
-First, Althea determines that it's always important to take a closer look at the data she's working with. As she can see from the output, the data is organized by case of individual, and contains three main columns of information; the age group of the individual (either 'under 50' or, as shown further down, '50 +'), the individual's vaccine status (which can be either 'vaccinated' or, as shown further down, 'unvaccinated'), and their outcome (which can be either 'death' or, as shown further down, 'survived').
-
-The data also seems to be tidy, since there are no NA values or other missing values from the dataset.
 
 ```{r}
 #| label: exploratory-data-analysis
 #| warning: false
 #| echo: true
 head(data)
-summary(data)
 ```
-
-## Does vaccine status affect mortality rate?
-
-To answer the simplest form of this question, Althea decides to first view a table of information relating vaccination status and outcomes. She notices that there seems to be some sort of trend - the number of vaccinated individuals is almost twice that of the number of unvaccinated individuals, but the number of survivors is much higher for those that were unvaccinated.
-
-```{r}
-#| label: mortality-rate-table
-#| warning: false
-#| echo: false
-table(data$vaccine_status, data$outcome)
-```
-
-In order to take a closer look at this, she decides to visualize this relationship. First, she groups the data by vaccine status, and summarizes by each respective mortality rate (vaccinated and unvaccinated). She then creates a bar plot based on this new dataset.
-
-```{r}
-#| label: mortality-rate-graph
-#| warning: false
-#| echo: false
-mortality_rates_vaccine <- data %>%
-  group_by(vaccine_status) %>%
-  summarize(
-    Total = n(),
-    Deaths = sum(outcome == "death"),
-    mortality_Rate = Deaths / Total
-  )
-ggplot(mortality_rates_vaccine, aes(x = vaccine_status, y = mortality_Rate)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Mortality Rates by Vaccine Status", 
-       x = "vaccine_status", 
-       y = "Mortality Rate") +
-  theme_minimal()
-```
-
-Althea immediately notices that her suspicions were true - at first, when only considering mortality rate and vaccine status, it appears as if the unvaccinated had a much lower mortality rate. In fact, similar to the table she generated above, the mortality rate more than doubles among those that are vaccinated.
-
-However, she decides more investigation must be done. After all, the FDA should demand only the highest quality of analysis from their brilliant chief analyst. She decides the next thing she needs to do is visualize vaccine status differences between the two age groups.
-
-```{r}
-#| label: applications
-#| warning: false
-#| echo: false
-applications_vaccine_status_age <- data %>%
-  select(age_group, vaccine_status) %>%
-  group_by(age_group, vaccine_status) %>%
-  summarize(
-    Total = n()
-  )
-ggplot(applications_vaccine_status_age, aes(x = age_group, y = Total, fill = vaccine_status)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Study Population by Age and Vaccine Status", 
-       x = "age_group", 
-       y = "Study population") +
-  theme_minimal()
-```
-
-Wow! Althea can see a huge difference, most noticeably that those aged 50+ are far more proportionally vaccinated than those under 50 (most likely due to the rollout of the vaccine prioritizing older folks first).
-
-She has a hunch that this may have affected her very simplistic visualization of vaccination status versus mortality rate. Althea then wrangles her data to group by 50+ or under 50, as well as vaccine status, then calculate the corresponding mortality rate for each type.
-
-```{r}
-#| label: wrangling-age-group-vaccine-status
-#| warning: false
-#| echo: false
-mortality_rates_vaccine_status_age <- data %>%
-  group_by(age_group, vaccine_status) %>%
-  summarize(
-    Total = n(),
-    Deaths = sum(outcome == "death"),
-    mortality_Rate = Deaths / Total
-  )
-
-head(mortality_rates_vaccine_status_age)
-```
-
-Aha! Just from seeing the mortality rates on the column furthest to the right, Althea notices that the mortality rates for both those 50+ and those under 50 are higher for those that are unvaccinated, compared to those that are vaccinated.
-
-However, this effect is most noticeable in the 50+ age group, where the unvaccinated mortality rate is almost three to four times higher!
-
-Althea decides to visualize this data in a meaningful way to truly confirm her newest conclusion.
-
-```{r}
-#| label: visualization-age-group-vaccine-status
-#| warning: false
-#| echo: false
-ggplot(mortality_rates_vaccine_status_age, aes(x = age_group, y = mortality_Rate, fill = vaccine_status)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Mortality Rates by Age and Vaccine Status", 
-       x = "age_group", 
-       y = "Mortality Rate") +
-  theme_minimal()
-```
-
-As she suspected, the mortality rate for those 50+ that were unvaccinated was much higher. She also notices that the mortality rate of those under 50 is so much lower than those 50+ that the bars are hardly visible!
-
-However, when she takes a closer look, as well as when she references the source data, she determines that even for those under 50 that may not be as closely affected by Covid-19, the vaccinations have still helped lower mortality rates.
-
-Reflecting back on her original research question proposed by the FDA, Althea the Third of Saint John deduces that yes, judging from this dataset, the COVID vaccine does reduce the mortality rate of COVID infection.
