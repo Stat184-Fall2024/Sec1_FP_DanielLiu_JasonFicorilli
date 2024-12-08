@@ -34,3 +34,18 @@ data <- read_csv(url(urlfile))
 #| echo: true
 head(data)
 ```
+```{r}
+#| label: wrangling
+#| warning: false
+#| echo: true
+
+data_2020 = filter(data, Year == 2020)
+```
+
+```{r}
+#| label: visualisation-1
+#| warning: false
+#| echo: true
+ggplot(data_2020, aes(x = Water_Access_Percent, y = Life_Expectancy)) + geom_point(size=1) + 
+  theme_bw()
+```
