@@ -109,7 +109,7 @@ To better understand the structure of our main dataset, let's first take a look 
 #| column: page
 #| echo: false
 
-# View the raw data of our Global Health dataset
+# View the raw data of our Global Health dataset 
 healthDataRaw <- healthData %>% 
   select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) # Selecting relevant columns to show the first few - since tables can't be too long on a PDF 
   
