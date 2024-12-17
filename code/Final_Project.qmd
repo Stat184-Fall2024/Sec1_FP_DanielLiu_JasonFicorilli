@@ -66,9 +66,9 @@ displayTable <- function(table) {
 
 As a part of a recent project launched by MoreLife Ltd., we were recruited to conduct some preliminary data analysis regarding water access percent versus life expectancy, as well as a closer look at life expectancy results in general, to see if there are any meaningful relationships we can draw.
 
-Specifically, we'll first be working towards seeing if there's a significant relationship between water access percent and life expectancy when the countries in the dataset are stratified into five regions, and analyzing the resulting visualizations. Depending on the results, MoreLife Ltd. may decide to allocate more resources towards providing safe water access.
+We will be exploring two main research questions; first: *is there a significant relationship between water access percent and life expectancy when the countries in the dataset are stratified into five regions?* To answer this, we will be analyzing some relevant visualizations. Depending on the results, MoreLife Ltd. may decide to allocate more resources towards providing safe water access.
 
-Then, we'll aim to focus on life expectancy in small subsets of countries, to determine which characteristics most drastically separate countries with high and low life expectancies. Due to MoreLife's extensive network with other federal agencies, understanding the effects of factors such as GDP on life expectancy can be valuable information for them, as well.
+Then, secondly; *what are some of the major characteristics that separate countries with high and low life expectancies?*. Due to MoreLife's extensive network with other federal agencies, understanding the effects of factors such as GDP on life expectancy can be valuable information for them, as well.
 
 \[Describe what attributes you'll focus your analysis on (mention if they are part of your data sets or if you created them out of your data sets).\]
 
@@ -76,7 +76,9 @@ Then, we'll aim to focus on life expectancy in small subsets of countries, to de
 
 ### Provenance
 
-The primary dataset that we will be using to complete this project will have come from Kaggle, titled "Global Health and Development (2012-2021)". It was created by Martina Galasso, who collected over 60 datasets from the World Health Organization and the World Bank to create it.
+The primary dataset that we will be using to complete this project will have come from Kaggle, titled "Global Health and Development (2012-2021)". It was created by Martina Galasso, who collected over 60 datasets from the World Health Organization and the World Bank to create it.[^1]
+
+[^1]: @galasso2024
 
 According to Galasso, the purpose of the dataset was to provide information for "researchers, analysts, and policymakers" who were interested in exploring the relationship between the factors present in the dataset.
 
@@ -177,7 +179,9 @@ As this graph stands, though, it isn't very helpful in trying to identify why an
 
 #### Data Wrangling
 
-First, let's take a look at our secondary dataset, which includes some region information below in Table 3.
+First, let's take a look at our secondary dataset, which is a collection of M49 codes from the United Nations Statistical Division [^2]. It contains standardized country codes, with region information, as well as ISO-alpha3 and ISO-alpha2 codes (Table 3).
+
+[^2]: @UNSD1999
 
 ```{r}
 #| label: viewing-region-data
@@ -452,9 +456,9 @@ ggplot(
 
 The general life expectancy changes for each country from 2012-2021 reveal both similarities and differences between countries with high and low measures during that time. The three countries with lower life expectancy (Chad, Lesotho, Nigeria) all exhibited similar upward growth from 2012-2020, with Lesotho eclipsing the other countries in 2016 and adding over 5 years to its overall life expectancy. Although all three African countries showed consistent growth, Spain, Switzerland, and Japan were not as similar. While Japan held a consistent increase in life expectancy, both Spain and Switzerland saw decreases from 2014-2015 and, most notably from 2019-2020.
 
-Although each country's trends were generally upward over time, a notable similarity was a decrease in life expectancy across every country within a part of the time period 2019-2021. This is likely the result of the COVID-19 global pandemic, which contributed to an estimated 18.2 million global deaths from 2020-2021.[^1] Interestingly, while Japan, Chad, Nigeria, and Lesotho all saw decreases in life expectancy from 2020-2021, Spain and Switzerland had considerable increases. Further, among the countries that did exhibit a loss during this time, Lesotho decreased the largest from 2020-2021, losing 1.63 years, while Spain lost 1.1 years from 2019-2020. The similarities and differences in life expectancy among these countries are further exemplified when compared on the basis of sex.
+Although each country's trends were generally upward over time, a notable similarity was a decrease in life expectancy across every country within a part of the time period 2019-2021. This is likely the result of the COVID-19 global pandemic, which contributed to an estimated 18.2 million global deaths from 2020-2021.[^3] Interestingly, while Japan, Chad, Nigeria, and Lesotho all saw decreases in life expectancy from 2020-2021, Spain and Switzerland had considerable increases. Further, among the countries that did exhibit a loss during this time, Lesotho decreased the largest from 2020-2021, losing 1.63 years, while Spain lost 1.1 years from 2019-2020. The similarities and differences in life expectancy among these countries are further exemplified when compared on the basis of sex.
 
-[^1]: [@wang2022]
+[^3]: @wang2022
 
 ```{r}
 #| label: fig-le_linecharts_sex
@@ -488,7 +492,7 @@ ggplot(
   geom_line(aes( #creating different line types based 'Sex'
     linetype = Sex
   ))+
-  labs( #select labels for plot
+  labs( #select labels for plot 
     x = "Year",
     y = "Life Expectancy (in years)",
     color = "Country"
