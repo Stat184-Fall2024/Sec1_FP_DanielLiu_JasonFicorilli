@@ -64,19 +64,19 @@ countryAverageDF <- aggregate( #aggregate columns to be averages from 2012-2021
 
 # Global Health - Where's My Water?
 
-As a part of a recent project launched by MoreLife Ltd., we were recruited to conduct some preliminary data analysis regarding water access percent versus life expectancy, as well as a closer look at life expectancy results in general, to see if there are any meaningful relationships we can draw.
+As a part of a recent project launched by MoreLife Ltd., we were recruited to conduct some preliminary data analysis regarding water access percentage and life expectancy, as well as a closer look at life expectancy results in general, to see if there are any meaningful relationships we can draw.
 
-We will be exploring two main research questions; first: *is there a significant relationship between water access percent and life expectancy when the countries in the dataset are stratified into five regions?* To answer this, we will be analyzing some relevant visualizations. Depending on the results, MoreLife Ltd. may decide to allocate more resources towards providing safe water access.
+We will be exploring two main research questions. First: **Is there a significant relationship between water access percent and life expectancy when countries are categorized into five regions?** Depending on the results, MoreLife Ltd. may decide to allocate more resources towards providing safe water access.
 
-Then, secondly; *what are some of the major characteristics that separate countries with high and low life expectancies?*. Due to MoreLife's extensive network with other federal agencies, understanding the effects of factors such as GDP on life expectancy can be valuable information for them, as well.
+Then, secondly; **What are some of the major characteristics that separate countries with high and low life expectancies?**. Due to MoreLife's extensive network with other federal agencies, understanding the effects of factors such as GDP on life expectancy could prove as valuable for others. 
 
-As mentioned, the two attribute we will be focused on are water access percentage and life expectancy. These will have come from the dataset itself, although we will be modifying them to create meaningful data visualizations. 
+As mentioned, the two attributes we will be focused on are water access percentage and life expectancy. These will have come from the dataset itself, although we will be modifying them to create meaningful data visualizations.
 
 ## Dataset
 
 ### Provenance
 
-The primary dataset that we will be using to complete this project will have come from Kaggle, titled "Global Health and Development (2012-2021)". It was created by Martina Galasso, who collected over 60 datasets from the World Health Organization and the World Bank to create it.[^1]
+The primary dataset that we will be using to complete this project is from Kaggle, titled "Global Health and Development (2012-2021)". It was created by Martina Galasso, who collected over 60 datasets from the World Health Organization and the World Bank to create it.[^1]
 
 [^1]: @galasso2024
 
@@ -86,17 +86,17 @@ According to Galasso, the purpose of the dataset was to provide information for 
 
 **Findability** can be ensured due to the data source, Kaggle, being completely publicly available. Kaggle is already a very common tool for dataset search, and simply filtering by name can bring up our dataset.
 
-**Accessibility** is also confirmed for a similar reason, where anybody who finds the dataset on Kaggle should be able to directly download it, and any other related files.
+**Accessibility** is also ensured for a similar reason, where anybody who finds the dataset on Kaggle should be able to directly download it, and any other related files.
 
 **Interoperability** can be ensured because the dataset currently uses very easily-readable column names, as well as a pretty simple format that is hard to misinterpret. If there are any concerns, they can also be resolved during data wrangling.
 
-**Reusability** is confirmed through the Kaggle website - if the dataset is found, all necessary metadata is located towards the bottom of the page.
+**Reusability** is ensured through the Kaggle website - if the dataset is found, all necessary metadata is located towards the bottom of the page.
 
-**Collective benefit** can be seen by the fact that a very diverse group of countries is represented in the dataset. It is difficult to engage in any biases considering the fact that all of the metrics included in the dataset are purely objective.
+**Collective benefit** can be ensured by the fact that a very diverse group of countries is represented in the dataset. It is difficult to engage in any biases considering the fact that all of the metrics included in the dataset are purely objective.
 
 **Authority to Control** is debatable. The Indigenous people whose data was used in this dataset was gathered by the World Health Organization and the World Bank. All of this information is completely publicly available.
 
-**Responsibility** and **Ethics** can also be ensured, for a similar reason that collective benefit can. There's little to no room for bias in this dataset, considering all of the metrics are purely objective. Historical context is not necessarily reflected, but also would not have any tangible effect on the data itself (and the same goes with cultural values). The interpretation of this data can certainly be affected by historical context, which we will definitely consider as we move forward.
+**Responsibility** and **Ethics** can also be ensured, for a similar reason that collective benefit can. There is little to no room for bias in this dataset, considering all of the metrics are purely objective. Historical context is not necessarily reflected, but also would not have any tangible effect on the data itself (and the same goes with cultural values). The interpretation of this data can certainly be affected by historical context, which we will consider as we move forward.
 
 ## Data cleaning
 
@@ -116,9 +116,9 @@ healthDataRaw <- healthData %>%
 healthDataRaw %>% displayTable()
 ```
 
-As we can see in Table 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The Country_Code column also is helpful for code brevity.
+As we can see in Table 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The `Country_Code` column also is helpful for code brevity.
 
-For this part of the research paper, we are only concerned with Country, Country_Code, Year, Water_Access_Percent, and Life_Expectancy. As such, we can get rid of all of the other columns for now and conduct our operations on a new dataframe, shown below, in Table 2.
+For this part of the research paper, we are only concerned with `Country`, `Country_Code`, `Year`, `Water_Access_Percent`, and `Life_Expectancy.` As such, we can get rid of all of the other columns for now and conduct our operations on a new dataframe, shown below, in Table 2.
 
 ```{r}
 #| label: relevant-cols
@@ -173,7 +173,7 @@ According to Figure 1, apparently, there does seem to be a decently strong corre
 
 For countries with lower water access percentages, the distribution of associated life expectancies is a lot more spread-out, and thus, would probably be harder to predict. Additionally, if we look closely, we can see what can seem to be little clusters of dots that, presumably, are all from the same country, but over the years (these are more visible toward the left of the graph).
 
-As this graph stands, though, it isn't very helpful in trying to identify why any of these differences in access to clean water or life expectancy may exist. More specifically, MoreLife Ltd. specializes in on-the-ground work, so let's take a look at how region may impact this graph.
+As this graph stands, though, it isn't very helpful in trying to identify why any of these differences in access to clean water or life expectancy may exist. More specifically, MoreLife Ltd. specializes in on-the-ground work, so we will take a look at how region may impact this graph.
 
 ### Does Region Affect Water Access Percent vs. Life Expectancy?
 
@@ -197,7 +197,7 @@ dataRegionRaw <- dataRegion %>%
 dataRegionRaw %>% displayTable()
 ```
 
-For the purposes of our data, we'll only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Table 4, below).
+For the purposes of our data, we will only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Table 4, below).
 
 ```{r}
 #| label: viewing-region-data-3
@@ -232,11 +232,11 @@ dataRegionMerged <- left_join( # Performing a left join to prioritize our Global
 dataRegionMerged %>% displayTable()
 ```
 
-Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's Region (Table 5). We can use this extra column to help see if its eventually stratification, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. Let's begin.
+Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's `Region` (Table 5). We can use this extra column to help see if its eventually inclusion, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. 
 
 #### Summary Statistics
 
-First, let's see if there's anything interesting when it comes to summary statistics for individual regions. We saw summary statistics for the whole dataset, but actually splitting it up by some metric is much more useful. Let's see how that looks.
+First, let's see if there is anything interesting when it comes to summary statistics for individual regions. We saw summary statistics for the whole dataset, but actually splitting it up by some metric is much more useful. Let's see how that looks.
 
 ```{r}
 #| label: summary-across-region
@@ -266,7 +266,7 @@ dataRegionSummary %>% displayTable()
 
 At first glance, when looking at Figure 7, there is a very large difference among the five regions in almost every metric shown above, so we will discuss each one. First, the **Mean** `Water_Access_Percent` is highest in Europe, and lowest in Africa. They differ by nearly 65 percentage points. America and Asia both have relatively similar mean `Water_Access_Percent`, and Oceania falls slightly lower. The **Median** statistic reflects these observations.
 
-However, **Standard Deviation** provides some interesting points. Firstly, Europe seems to have the lowest standard deviation, which actually matches what we saw earlier with the graph (where the higher water access percents all seemed to be clustered around a similar life expectancy, while lower water access percents tended to have greater variation in terms of life expectancy). Additionally, even though Oceania wasn't particularly remarkable in terms of its mean `Water_Access_Percent`, it has the highest standard deviation. In fact, its standard deviation is nearly 2/3 of its mean, which clearly indicates a huge range of `Water_Access_Percent` values.
+**Standard Deviation** also provides some interesting points. Firstly, Europe seems to have the lowest standard deviation, which actually matches what we saw earlier with the graph (where the higher water access percents all seemed to be clustered around a similar life expectancy, while lower water access percents tended to have greater variation in terms of life expectancy). Additionally, even though Oceania wasn't particularly remarkable in terms of its mean `Water_Access_Percent`, it has the highest standard deviation. In fact, its standard deviation is nearly 2/3 of its mean, which clearly indicates a huge range of `Water_Access_Percent` values.
 
 Oceania's relatively large standard deviation is also reflected in its **Min** and **Max**, which, by far, has the largest difference (which we can also see through its high **Range**).
 
