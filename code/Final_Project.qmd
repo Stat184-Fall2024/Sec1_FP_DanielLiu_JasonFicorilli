@@ -87,10 +87,11 @@ To better understand the structure of our main dataset, let's first take a look 
 #| column: page
 #| echo: false
 
+# View the raw data of our Global Health dataset
 health_df %>% 
-  select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) %>%
+  select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) %>% # Selecting relevant columns to show the first few - since tables can't be too long on a PDF
   head() %>%
-  knitr::kable() %>%
+  knitr::kable() %>% # Styling - using kable striped
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -105,9 +106,10 @@ For this part of the research paper, we are only concerned with Country, Country
 #| column: page
 #| echo: false
 
-data_water <- health_df %>% select(Country, Country_Code, Year, Water_Access_Percent, Life_Expectancy)
+# View only the relevant columns from our Global health dataset
+data_water <- health_df %>% select(Country, Country_Code, Year, Water_Access_Percent, Life_Expectancy) # Selecting only the columns that concern us
 head(data_water) %>% 
-  knitr::kable() %>%
+  knitr::kable() %>% # Kable styling, yet again
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -127,22 +129,22 @@ Firstly, it might be beneficial to take a look and see if there's a relationship
 #| message: false
 #| warning: false
 
+# Scatterplot with trend line of water access percentage vs. life expectancy
 ggplot(
   data = data_water,
   aes(x = Water_Access_Percent, y = Life_Expectancy)) +
-  geom_point(color = "grey") +        # larger, semi-transparent points
-  geom_smooth(method = "lm",                 # add trend line
-             color = "black",
-             se = TRUE,                      # include confidence interval
-             alpha = 0.2) +
-  theme_bw() +
+  geom_point(color = "grey") + # Grey points, to help with making them less visible
+  geom_smooth(method = "lm", # Adding trend line
+             color = "black", # Making the trend line black to make it more clear
+             se = TRUE,                      
+             alpha = 0.2) + # Making the dots a little bit smaller for visibility
+  theme_bw() + # Black and white theming
   labs(
     x = "Access to Clean Water (%)",
-    y = "Life Expectancy (Years)",                    # legend title
+    y = "Life Expectancy (Years)",
   ) +
   theme(
-    plot.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
+    panel.grid.minor = element_blank() # Making the minor grid lines less visible since their actual values are not so relevant
   ) 
 ```
 
@@ -165,10 +167,11 @@ First, let's take a look at our secondary dataset, which includes some region in
 #| echo: false
 #| message: false
 
+# Viewing the raw data for our UNSD Code Data
 data_region %>% 
-  select("Global Code", "Global Name", "Region Code", "Region Name", "Sub-region Code") %>%
-  head() %>%
-  knitr::kable() %>%
+  select("Global Code", "Global Name", "Region Code", "Region Name", "Sub-region Code") %>% # Selecting specific columns from the dataset so they are actually visible in a PDF
+  head() %>% # Showing only the head
+  knitr::kable() %>% # Kable styling, yet again
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -181,12 +184,13 @@ For the purposes of our data, we'll only be needing the following columns: `Regi
 #| echo: false
 #| message: false
 
+# Table of relevant columns from USD Code Data
 data_region_relevant <- data_region %>% 
-  select("Region Name", "ISO-alpha3 Code") 
+  select("Region Name", "ISO-alpha3 Code") # Selecting only the relevant columns from our dataset
 
 data_region_relevant %>%
-  head() %>%
-  knitr::kable() %>%
+  head() %>% # Showing only the head for aesthetics
+  knitr::kable() %>% # Kable styling, yet again
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -199,15 +203,16 @@ Now, we can begin with merging the two datasets via the `ISO-alpha3 Code` and `C
 #| column: page
 #| echo: false
 
-data_region_merged <- left_join(
+# Table of Global Health merged with UNSD Code Data
+data_region_merged <- left_join( # Performing a left join to prioritize our Global Health dataset
   x = data_water,
   y = data_region_relevant,
-  by = join_by("Country_Code" == "ISO-alpha3 Code")
+  by = join_by("Country_Code" == "ISO-alpha3 Code") # Join condition
 )
 
 data_region_merged %>%
-  head() %>%
-  knitr::kable() %>%
+  head() %>% # Viewing only the head for aesthetics
+  knitr::kable() %>% # Kable styling
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -224,19 +229,21 @@ First, let's see if there's anything interesting when it comes to summary statis
 #| column: page
 #| echo: false
 
+# Table of summary statistics for Global Health UNSD Code merged table
 region_summary <- data_region_merged %>%
-  group_by(`Region Name`) %>%
+  group_by(`Region Name`) %>% # Specifically grouping my region name to compare the different regions
   summarize(
-    Mean = round(mean(Water_Access_Percent, na.rm = TRUE), 2),
+    Mean = round(mean(Water_Access_Percent, na.rm = TRUE), 2), # Mean, median, SD, Min, and Max summary
     Median = round(median(Water_Access_Percent, na.rm = TRUE), 2),
     SD = round(sd(Water_Access_Percent, na.rm = TRUE), 2),
     Min = round(min(Water_Access_Percent, na.rm = TRUE), 2),
     Max = round(max(Water_Access_Percent, na.rm = TRUE), 2)
   ) %>%
-  mutate(Range = round(Max - Min, 2))
+  mutate(Range = round(Max - Min, 2)) # Rounding all of the values to 2 decimal points for readability
 
 region_summary %>%
-  knitr::kable() %>%
+  head() %>% # Showing only the head for aesthetics
+  knitr::kable() %>% # Kable styling
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
@@ -258,20 +265,20 @@ However, to get an even better understanding of how this information actually af
 #| message: false
 #| warning: false
 
+# Scatterplot of water access percent vs. life expectancy with region considered
 ggplot(
-  data = data_region_merged,
+  data = data_region_merged, # Data
   aes(x = Water_Access_Percent, y = Life_Expectancy, color = `Region Name`)) +
-  geom_point(alpha = 0.5, size = 1.2) +
-  scale_color_brewer(palette = "Set1") +
-  theme_bw() +
+  geom_point(alpha = 0.5, size = 1.2) + # Making the dots less opaque, but still large enough discerned
+  scale_color_brewer(palette = "Set1") + # Selecting a nice color palette that can distinguish the different regions
+  theme_bw() + 
   labs(
     x = "Access to Clean Water (%)",
     y = "Life Expectancy (Years)",
-    color = "Region Name",
-    fill = "Region Name"
+    color = "Region Name", # Actually coloring the dots by region
+    fill = "Region Name" # ^
   ) +
   theme(
-    plot.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
 ```
@@ -290,24 +297,24 @@ Other regions such as Africa and the Americas are decently clustered around the 
 #| message: false
 #| warning: false
 
+# Contour plot of the merged data comparing water access percentage and life expectancy
 ggplot(
   data = data_region_merged,
   aes(x = Water_Access_Percent, y = Life_Expectancy, color = `Region Name`)) +
-  geom_density_2d(aes(color = `Region Name`),
-                  linewidth = 0.8,    
+  geom_density_2d(aes(color = `Region Name`), # Actually using a contour plot to make distributions more even
+                  linewidth = 0.8, # This and below - aesthetics to make the contours better-looking
                   alpha = 0.6,        
                   bins = 15,          
                   h = c(12, 6)) +     
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1") + # Choosing a nice color palette to actually distinguish the regions
   theme_bw() +
   labs(
     x = "Access to Clean Water (%)",
     y = "Life Expectancy (Years)",
-    color = "Region Name",
+    color = "Region Name", # Actually coloring by region
     fill = "Region Name"
   ) +
   theme(
-    plot.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
 ```
