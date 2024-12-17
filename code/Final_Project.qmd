@@ -94,9 +94,9 @@ health_df %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
-As we can see in Figure 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The Country_Code column also is helpful for code brevity.
+As we can see in Table 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The Country_Code column also is helpful for code brevity.
 
-For this part of the research paper, we are only concerned with Country, Country_Code, Year, Water_Access_Percent, and Life_Expectancy. As such, we can get rid of all of the other columns for now and conduct our operations on a new dataframe, shown below, in Figure 2.
+For this part of the research paper, we are only concerned with Country, Country_Code, Year, Water_Access_Percent, and Life_Expectancy. As such, we can get rid of all of the other columns for now and conduct our operations on a new dataframe, shown below, in Table 2.
 
 ```{r}
 #| label: relevant-cols
@@ -146,7 +146,7 @@ ggplot(
   ) 
 ```
 
-According to Figure 3, apparently, there does seem to be a decently strong correlation between access to clean water and life expectancy. One thing to note is that there seem to be a lot of countries closely clustered toward 100% access to clean water, and most of the associated life expectancies seem to be clustered around 82% - 85%.
+According to Figure 1, apparently, there does seem to be a decently strong correlation between access to clean water and life expectancy. One thing to note is that there seem to be a lot of countries closely clustered toward 100% access to clean water, and most of the associated life expectancies seem to be clustered around 82% - 85%.
 
 For countries with lower water access percentages, the distribution of associated life expectancies is a lot more spread-out, and thus, would probably be harder to predict. Additionally, if we look closely, we can see what can seem to be little clusters of dots that, presumably, are all from the same country, but over the years (these are more visible toward the left of the graph).
 
@@ -156,7 +156,7 @@ As this graph stands, though, it isn't very helpful in trying to identify why an
 
 #### Data Wrangling
 
-First, let's take a look at our secondary dataset, which includes some region information below in Figure 4.
+First, let's take a look at our secondary dataset, which includes some region information below in Table 3.
 
 ```{r}
 #| label: viewing-region-data
@@ -172,7 +172,7 @@ data_region %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
-For the purposes of our data, we'll only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Figure 5, below).
+For the purposes of our data, we'll only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Table 4, below).
 
 ```{r}
 #| label: viewing-region-data-3
@@ -188,16 +188,6 @@ data_region_relevant %>%
   head() %>%
   knitr::kable() %>%
   kable_styling(latex_options = c("striped", "hold_position"))
-```
-
-```{r}
-#| label: rows_region
-#| warning: false
-#| column: page
-#| echo: false
-
-num_rows_2 <- data_region_relevant %>% nrow() %>% toString()
-paste("Rows:", num_rows_2)
 ```
 
 Now, we can begin with merging the two datasets via the `ISO-alpha3 Code` and `Country Code` columns, which both mean the same thing.
@@ -221,7 +211,7 @@ data_region_merged %>%
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 
-Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's Region (Figure 6). We can use this extra column to help see if its eventually stratification, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. Let's begin.
+Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's Region (Table 5). We can use this extra column to help see if its eventually stratification, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. Let's begin.
 
 #### Summary Statistics
 
@@ -286,7 +276,7 @@ ggplot(
   )
 ```
 
-What we can see in Figure 8 is actually quite a bit of interesting information regarding the distribution of each region's water access percent. Toward the right and top side of the graph, we can now see that the cluster of points with nearly 100% `Water_Access_Percent` are composed mainly of some European and Asian countries, with a few in Oceania. Interestingly enough, even though America had the second-highest mean `Water_Access_Percent`, they're not as clustered toward the top as some Asian countries, and are more spread out.
+What we can see in Figure 2 is actually quite a bit of interesting information regarding the distribution of each region's water access percent. Toward the right and top side of the graph, we can now see that the cluster of points with nearly 100% `Water_Access_Percent` are composed mainly of some European and Asian countries, with a few in Oceania. Interestingly enough, even though America had the second-highest mean `Water_Access_Percent`, they're not as clustered toward the top as some Asian countries, and are more spread out.
 
 Additionally, we can see what we noted previously, where Oceania was much more spread out than any of the other groups. Although there aren't many, there are little clusters of orange dots that range anywhere from about 10% water access to nearly 100% water access (this also reflects what we saw with min/max summary statistics).
 
@@ -322,7 +312,7 @@ ggplot(
   )
 ```
 
-Finally, we have a graph (Figure 9) that best represents the distribution of region data. Specifically, we can now see the Oceania data points much more clearly, and see that they're specifically clustered around 10%, 26%, 40%, 60%, and 90% water access percentage, approximately. We can also see a huge cluster of African countries around 75% water access percentage that was decently hard to spot in the scatterplot.
+Finally, we have a graph (Figure 3) that best represents the distribution of region data. Specifically, we can now see the Oceania data points much more clearly, and see that they're specifically clustered around 10%, 26%, 40%, 60%, and 90% water access percentage, approximately. We can also see a huge cluster of African countries around 75% water access percentage that was decently hard to spot in the scatterplot.
 
 Overall, we can now see that the correlation between access to clean water percentage is very strong in general, and although the influence of regions on this correlation is also decently strong, it has a lot more discrepancies than one might assume. However, MoreLife Ltd. is very much interested in further exploring life expectancy as an attribute, as well as region, since they seem to show a lot of promise for future discovery.
 
