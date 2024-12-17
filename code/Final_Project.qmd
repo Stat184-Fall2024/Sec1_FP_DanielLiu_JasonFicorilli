@@ -24,6 +24,16 @@ library(readr)
 library(dplyr)
 library(kableExtra)
 
+#Create function to display tables with kable
+displayTable <- function(table) {
+  newTable <- table %>%
+    head() %>% # Displaying just the head for aesthetics
+    knitr::kable() %>% # Styling - using kable striped
+    kable_styling(
+      latex_options = c("striped", "hold_position") # Specifically choosing striped for aesthetic reasons
+    )
+  return(newTable) # Return call
+
 #Load main data set
 healthData <- read.csv(
   url(
@@ -49,16 +59,6 @@ countryAverageDF <- aggregate( #aggregate columns to be averages from 2012-2021
   FUN = mean
 ) %>%
   rename("Country" = "Group.1")
-
-#Create function to display tables with kable
-displayTable <- function(table) {
-  newTable <- table %>%
-    head() %>% # Displaying just the head for aesthetics
-    knitr::kable() %>% # Styling - using kable striped
-    kable_styling(
-      latex_options = c("striped", "hold_position") # Specifically choosing striped for aesthetic reasons
-    )
-  return(newTable) # Return call
 }
 ```
 
@@ -70,7 +70,7 @@ We will be exploring two main research questions; first: *is there a significant
 
 Then, secondly; *what are some of the major characteristics that separate countries with high and low life expectancies?*. Due to MoreLife's extensive network with other federal agencies, understanding the effects of factors such as GDP on life expectancy can be valuable information for them, as well.
 
-\[Describe what attributes you'll focus your analysis on (mention if they are part of your data sets or if you created them out of your data sets).\]
+As mentioned, the two attribute we will be focused on are water access percentage and life expectancy. These will have come from the dataset itself, although we will be modifying them to create meaningful data visualizations. 
 
 ## Dataset
 
@@ -132,7 +132,7 @@ dataWater <- healthData %>% select(Country, Country_Code, Year, Water_Access_Per
 dataWater %>% displayTable()
 ```
 
--   regardless, we can move forward with some actual discovery.
+Now, we can move forward with some actual discovery.
 
 ## Part One: Evaluating the Relationship Between Water Access Percent and Life Expectancy Across Region
 
