@@ -378,9 +378,9 @@ ggplot(
   theme_classic()
 ```
 
-As captured in the figure, the differences in the highest and lowest life expectancy measures is stark. Over the period of time from 2012-2021, a person would have been expected to live an average of 32 years longer as a Japanese resident compared to having lived in Lesotho. Geographical differences are also apparent: the top five countries with the lowest average life expectancy are in Africa, while the top five highest average life expectancy are in Asia and Europe. To further explore the differences between these types of countries, the three highest (**Japan**, **Switzerland**, and **Spain**) and three lowest (**Lesotho**, **Chad**, and **Nigeria**) average life expectancy countries will be primarily evaluated.
+As captured in Figure 4, the differences in the highest and lowest life expectancy measures is stark. Over the period of time from 2012-2021, a person would have been expected to live an average of 32 years longer as a Japanese resident compared to having lived in Lesotho. Geographical differences are also apparent: the top five countries with the lowest average life expectancy are in Africa, while the top five highest average life expectancy are in Asia and Europe. To further explore the differences between these types of countries, the three highest (**Japan**, **Switzerland**, and **Spain**) and three lowest (**Lesotho**, **Chad**, and **Nigeria**) average life expectancy countries will be primarily evaluated.
 
-Considering such differences in average life expectancy from 2012-2021, the year-by-year basis of each country's life expectancy can be explored further, as shown in the figure below.
+Considering such differences in average life expectancy from 2012-2021, the year-by-year basis of each country's life expectancy can be explored further, as shown in Figure 5.
 
 ```{r}
 #| label: fig-le_linecharts
@@ -506,7 +506,7 @@ ggplot(
   theme_classic() #change theme (remove grid lines)
 ```
 
-The sex-based visuals display differing characteristics from the general life expectancy trends. Firstly, while most countries have had a higher female life expectancy of at least three years compared to the male rate throughout this time, Nigeria's life expectancy was considerably close for both men and women, with nearly identical values for several years. Further, of the European and Asian countries, women were expected to live nearly four years longer than men on average. These trends show that, while the magnitude of life expectancy for the three African countries and three European/Asian countries were vastly different, these regions all exhibited some similarities in the recent developments of their life expectancy.
+The sex-based visuals in Figure 6 display differing characteristics from the general life expectancy trends. Firstly, while most countries have had a higher female life expectancy of at least three years compared to the male rate throughout this time, Nigeria's life expectancy was considerably close for both men and women, with nearly identical values for several years. Further, of the European and Asian countries, women were expected to live nearly four years longer than men on average. These trends show that, while the magnitude of life expectancy for the three African countries and three European/Asian countries were vastly different, these regions all exhibited some similarities in the recent developments of their life expectancy.
 
 After evaluating the temporal elements of the six countries' life expectancy values, the possible attributing factors to these changes can be addressed. While many factors influence the life expectancy measure for a country, several of which are beyond the scope of this project, the global health data set provides additional characteristics recorded over the period from 2012-2021 that further illustrate the differences between these countries.
 
@@ -554,7 +554,7 @@ ggplot(
   theme_classic()
 ```
 
-The visuals of GDP and population size set the context for considering the life expectancy measures for each country. As shown in the average total population bar chart, Nigeria had a considerably larger population than all the other countries, with Switzerland having the second lowest followed by Lesotho. However, Switzerland had more than double the average GDP per capita than Japan and over 19 times more than the lowest three life expectancy countries combined. Further, Spain had over six times the total average GDP per capita of the three African countries, with Chad having only \$784.81 per person on average from 2012-2021.
+The visuals of GDP and population size in Figure 7 set the context for considering the life expectancy measures for each country. As shown in the average total population bar chart, Nigeria had a considerably larger population than all the other countries, with Switzerland having the second lowest followed by Lesotho. However, Switzerland had more than double the average GDP per capita than Japan and over 19 times more than the lowest three life expectancy countries combined. Further, Spain had over six times the total average GDP per capita of the three African countries, with Chad having only \$784.81 per person on average from 2012-2021.
 
 Although national wealth is not the sole factor determining how long a country's residents are expected to live, it can represent a country's ability to provide adequate expenditure and government support for the healthcare needs of its population. In particular, it can reflect the financial support available for a country to combat serious diseases or mitigate air pollution, both of which could significantly decrease a country's life expectancy if widespread. This leads us to consider the comparison of each country's healthcare expenditure over time.
 
@@ -654,7 +654,7 @@ ggplot(
   theme_classic() #change theme (remove grid lines)
 ```
 
-The direct comparison of the countries' healthcare expenditure to life expectancy changes reveals conflicting characteristics about the efficacy of large national healthcare spending. Firstly, when observing the three African countries, Lesotho's large expenditure percentage of its GDP towards healthcare seems to be a worthwhile investment as its life expectancy has risen considerably over the years relative to similar average expectancy countries. However, when observing the European and Asian countries, Spain's very low expenditure relative to Switzerland and Japan while maintaining similar life expectancy may suggest the opposite.
+The direct comparison of the countries' healthcare expenditure to life expectancy changes reveals conflicting characteristics about the efficacy of large national healthcare spending. In Figure 8, when observing the three African countries, Lesotho's large expenditure percentage of its GDP towards healthcare seems to be a worthwhile investment as its life expectancy has risen considerably over the years relative to similar average expectancy countries. However, in Figure 9, when observing the European and Asian countries, Spain's very low expenditure relative to Switzerland and Japan while maintaining similar life expectancy may suggest the opposite.
 
 Either way, a notable observation is the magnitude of the expenditure percentages of GDP across the countries. Yearly, Chad and Nigeria combined spent less than Lesotho on healthcare: roughly only 3-4% each. This is less than double the rate of Lesotho, Japan, and Switzerland respectively, which may reflect the countries' slowly increasing life expectancy relative to Lesotho.
 
@@ -709,7 +709,7 @@ ggplot(
 
 ```
 
-These pollution and safe water access visuals reveal considerable insights into potential causes for the life expectancy discrepancies between the six countries. In the graphs, the three African countries have air pollution levels considerably higher than the European and Asian countries. Similarly, over a third of the population for each African country does not have safe access to water, while nearly 100% of the other countries do. These results highlight the major disparities in population quality of life between countries with high and low life expectancy. Although there are promising developments with increasing rates of safe water access and decreasing air pollution levels for Chad and Nigeria, the high magnitudes relative to a country like Lesotho likely remain influential factors in harming overall population life expectation.
+Figure 10 and 11's pollution and safe water access visuals reveal considerable insights into potential causes for the life expectancy discrepancies between the six countries. In the graphs, the three African countries have air pollution levels considerably higher than the European and Asian countries. Similarly, over a third of the population for each African country does not have safe access to water, while nearly 100% of the other countries do. These results highlight the major disparities in population quality of life between countries with high and low life expectancy. Although there are promising developments with increasing rates of safe water access and decreasing air pollution levels for Chad and Nigeria, the high magnitudes relative to a country like Lesotho likely remain influential factors in harming overall population life expectation.
 
 ```{r}
 #| label: fig-safe_water_le_linechart_all
