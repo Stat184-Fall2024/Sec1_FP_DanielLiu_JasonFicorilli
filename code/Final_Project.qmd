@@ -16,6 +16,8 @@ csl: apa7.csl
 #| include: false
 #| echo: false
 
+# Style Guide: BOAST
+
 library(ggplot2)
 library(tidyverse)
 library(readr)
@@ -23,20 +25,30 @@ library(dplyr)
 library(kableExtra)
 
 #Load main data set
-health_df <- read.csv(url("https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/global_health.csv"))
+healthData <- read.csv(
+  url(
+    "https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/global_health.csv"
+    )
+  )
 
 #Load global regions data set
-urlfile_region = "https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/UNSD_codes.csv"
-data_region <- read_csv(url(urlfile_region))
+urlFileRegion = "https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/UNSD_codes.csv"
+dataRegion <- read_csv(
+  url(
+    urlFileRegion
+    )
+  )
 
 #Select all columns from 2012-2021 table except year and country code
-country_avg_df <- health_df %>% 
-  select(!c(Year, Country_Code)) #Remove year and country code columns
+countryAverageDF <- healthData %>% 
+  select(
+    !c(Year, Country_Code)
+    ) #Remove year and country code columns
 
 #Create data frame of averaged columns
-country_avg_df <- aggregate( #aggregate columns to be averages from 2012-2021
-  x = country_avg_df[, 2:27],
-  by = list(country_avg_df$Country),
+countryAverageDF <- aggregate( #aggregate columns to be averages from 2012-2021
+  x = countryAverageDF[, 2:27],
+  by = list(countryAverageDF$Country),
   FUN = mean
 ) %>%
   rename("Country" = "Group.1")
@@ -88,11 +100,13 @@ To better understand the structure of our main dataset, let's first take a look 
 #| echo: false
 
 # View the raw data of our Global Health dataset
-health_df %>% 
+healthData %>% 
   select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) %>% # Selecting relevant columns to show the first few - since tables can't be too long on a PDF
   head() %>%
   knitr::kable() %>% # Styling - using kable striped
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 As we can see in Table 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The Country_Code column also is helpful for code brevity.
@@ -107,10 +121,12 @@ For this part of the research paper, we are only concerned with Country, Country
 #| echo: false
 
 # View only the relevant columns from our Global health dataset
-data_water <- health_df %>% select(Country, Country_Code, Year, Water_Access_Percent, Life_Expectancy) # Selecting only the columns that concern us
-head(data_water) %>% 
+dataWater <- healthData %>% select(Country, Country_Code, Year, Water_Access_Percent, Life_Expectancy) # Selecting only the columns that concern us
+head(dataWater) %>% 
   knitr::kable() %>% # Kable styling, yet again
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 -   regardless, we can move forward with some actual discovery.
@@ -131,8 +147,10 @@ Firstly, it might be beneficial to take a look and see if there's a relationship
 
 # Scatterplot with trend line of water access percentage vs. life expectancy
 ggplot(
-  data = data_water,
-  aes(x = Water_Access_Percent, y = Life_Expectancy)) +
+  data = dataWater,
+  aes(
+    x = Water_Access_Percent, 
+    y = Life_Expectancy)) +
   geom_point(color = "grey") + # Grey points, to help with making them less visible
   geom_smooth(method = "lm", # Adding trend line
              color = "black", # Making the trend line black to make it more clear
@@ -168,11 +186,13 @@ First, let's take a look at our secondary dataset, which includes some region in
 #| message: false
 
 # Viewing the raw data for our UNSD Code Data
-data_region %>% 
+dataRegion %>% 
   select("Global Code", "Global Name", "Region Code", "Region Name", "Sub-region Code") %>% # Selecting specific columns from the dataset so they are actually visible in a PDF
   head() %>% # Showing only the head
   knitr::kable() %>% # Kable styling, yet again
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 For the purposes of our data, we'll only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Table 4, below).
@@ -185,13 +205,15 @@ For the purposes of our data, we'll only be needing the following columns: `Regi
 #| message: false
 
 # Table of relevant columns from USD Code Data
-data_region_relevant <- data_region %>% 
+dataRegionRelevant <- dataRegion %>% 
   select("Region Name", "ISO-alpha3 Code") # Selecting only the relevant columns from our dataset
 
-data_region_relevant %>%
+dataRegionRelevant %>%
   head() %>% # Showing only the head for aesthetics
   knitr::kable() %>% # Kable styling, yet again
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 Now, we can begin with merging the two datasets via the `ISO-alpha3 Code` and `Country Code` columns, which both mean the same thing.
@@ -204,16 +226,18 @@ Now, we can begin with merging the two datasets via the `ISO-alpha3 Code` and `C
 #| echo: false
 
 # Table of Global Health merged with UNSD Code Data
-data_region_merged <- left_join( # Performing a left join to prioritize our Global Health dataset
-  x = data_water,
-  y = data_region_relevant,
+dataRegionMerged <- left_join( # Performing a left join to prioritize our Global Health dataset
+  x = dataWater,
+  y = dataRegionRelevant,
   by = join_by("Country_Code" == "ISO-alpha3 Code") # Join condition
 )
 
-data_region_merged %>%
+dataRegionMerged %>%
   head() %>% # Viewing only the head for aesthetics
   knitr::kable() %>% # Kable styling
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's Region (Table 5). We can use this extra column to help see if its eventually stratification, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. Let's begin.
@@ -230,8 +254,10 @@ First, let's see if there's anything interesting when it comes to summary statis
 #| echo: false
 
 # Table of summary statistics for Global Health UNSD Code merged table
-region_summary <- data_region_merged %>%
-  group_by(`Region Name`) %>% # Specifically grouping my region name to compare the different regions
+dataRegionSummary <- dataRegionMerged %>%
+  group_by(
+    `Region Name`
+  ) %>% # Specifically grouping my region name to compare the different regions
   summarize(
     Mean = round(mean(Water_Access_Percent, na.rm = TRUE), 2), # Mean, median, SD, Min, and Max summary
     Median = round(median(Water_Access_Percent, na.rm = TRUE), 2),
@@ -239,12 +265,16 @@ region_summary <- data_region_merged %>%
     Min = round(min(Water_Access_Percent, na.rm = TRUE), 2),
     Max = round(max(Water_Access_Percent, na.rm = TRUE), 2)
   ) %>%
-  mutate(Range = round(Max - Min, 2)) # Rounding all of the values to 2 decimal points for readability
+  mutate(
+    Range = round(Max - Min, 2)
+  ) # Rounding all of the values to 2 decimal points for readability
 
-region_summary %>%
+dataRegionSummary %>%
   head() %>% # Showing only the head for aesthetics
   knitr::kable() %>% # Kable styling
-  kable_styling(latex_options = c("striped", "hold_position"))
+  kable_styling(
+    latex_options = c("striped", "hold_position")
+  )
 ```
 
 At first glance, when looking at Figure 7, there is a very large difference among the five regions in almost every metric shown above, so we will discuss each one. First, the **Mean** `Water_Access_Percent` is highest in Europe, and lowest in Africa. They differ by nearly 65 percentage points. America and Asia both have relatively similar mean `Water_Access_Percent`, and Oceania falls slightly lower. The **Median** statistic reflects these observations.
@@ -267,9 +297,14 @@ However, to get an even better understanding of how this information actually af
 
 # Scatterplot of water access percent vs. life expectancy with region considered
 ggplot(
-  data = data_region_merged, # Data
-  aes(x = Water_Access_Percent, y = Life_Expectancy, color = `Region Name`)) +
-  geom_point(alpha = 0.5, size = 1.2) + # Making the dots less opaque, but still large enough discerned
+  data = dataRegionMerged, # Data
+  aes(
+    x = Water_Access_Percent, 
+    y = Life_Expectancy, 
+    color = `Region Name`)) +
+  geom_point(
+    alpha = 0.5, 
+    size = 1.2) + # Making the dots less opaque, but still large enough discerned
   scale_color_brewer(palette = "Set1") + # Selecting a nice color palette that can distinguish the different regions
   theme_bw() + 
   labs(
@@ -299,8 +334,11 @@ Other regions such as Africa and the Americas are decently clustered around the 
 
 # Contour plot of the merged data comparing water access percentage and life expectancy
 ggplot(
-  data = data_region_merged,
-  aes(x = Water_Access_Percent, y = Life_Expectancy, color = `Region Name`)) +
+  data = dataRegionMerged,
+  aes(
+    x = Water_Access_Percent, 
+    y = Life_Expectancy, 
+    color = `Region Name`)) +
   geom_density_2d(aes(color = `Region Name`), # Actually using a contour plot to make distributions more even
                   linewidth = 0.8, # This and below - aesthetics to make the contours better-looking
                   alpha = 0.6,        
@@ -343,13 +381,15 @@ In order to identify countries to investigate further, we demonstrate the top fi
 
 #Horizontal bar chart for the five lowest average life expectancy countries
 ggplot(
-  data = country_avg_df %>% arrange(Life_Expectancy) %>% head(5), #get top 5 countries
+  data = countryAverageDF %>% arrange(Life_Expectancy) %>% head(5), #get top 5 countries
   mapping = aes(
     x = Life_Expectancy,
     y = reorder(Country, -Life_Expectancy)) #reorder bars to be descending
 ) + 
   geom_col(fill="darkred")+
-  geom_text(aes(label = signif(Life_Expectancy, 4)), nudge_x = 4) + 
+  geom_text(
+    aes(label = signif(Life_Expectancy, 4)), 
+    nudge_x = 4) + 
   #add respective values (4 sig figs) next to bars
   labs(
     x = "Average Life Expectancy (in Years)",
@@ -360,7 +400,7 @@ ggplot(
 
 #Horizontal bar chart for the five highest average life expectancy countries
 ggplot(
-  data = country_avg_df %>% arrange(desc(Life_Expectancy)) %>% head(5), #get top 5
+  data = countryAverageDF %>% arrange(desc(Life_Expectancy)) %>% head(5), #get top 5
   mapping = aes(
     x = Life_Expectancy,
     y = reorder(Country, Life_Expectancy)) #reorder bars to be descending
@@ -391,7 +431,7 @@ Considering such differences in average life expectancy from 2012-2021, the year
 
 #Life expectancy line chart for low 3 countries over time
 ggplot(
-  data = health_df %>% filter(Country=="Nigeria" | Country=="Lesotho" | Country =="Chad"),
+  data = healthData %>% filter(Country=="Nigeria" | Country=="Lesotho" | Country =="Chad"),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
@@ -410,7 +450,7 @@ ggplot(
 
 #Life expectancy line chart for high 3 countries over time
 ggplot(
-  data = health_df %>% filter(Country=="Japan" | Country=="Spain" | Country =="Switzerland"),
+  data = healthData %>% filter(Country=="Japan" | Country=="Spain" | Country =="Switzerland"),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
@@ -445,7 +485,7 @@ Although each country's trends were generally upward over time, a notable simila
 
 # Life expectancy line chart for low 3 countries, split on sex
 ggplot(
-  data = health_df %>% 
+  data = healthData %>% 
     filter(Country=="Nigeria" | Country=="Lesotho" | Country =="Chad") %>%
     select(Country, Year, Life_Expectancy_Male, Life_Expectancy_Female) %>%
     rename("Male" = "Life_Expectancy_Male") %>%
@@ -475,7 +515,7 @@ ggplot(
 
 #Life expectancy line chart for high 3 countries over time
 ggplot(
-  data = health_df %>% 
+  data = healthData %>% 
     filter(Country=="Japan" | Country=="Spain" | Country =="Switzerland") %>%
     select(Country, Year, Life_Expectancy_Male, Life_Expectancy_Female) %>%
     rename("Male" = "Life_Expectancy_Male") %>%
@@ -523,7 +563,7 @@ When looking at why a country might have experienced changes in the expected lif
 
 #Vertical bar chart for average total population from 2012-2021
 ggplot(
-  data = country_avg_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
+  data = countryAverageDF %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
   mapping = aes(
     x = reorder(Country, -Total_Population), #reorder bars to be descending from highest to lowest
     y = Total_Population)
@@ -538,7 +578,7 @@ ggplot(
 
 #Vertical bar chart for average GDP per capita from 2012-2021
 ggplot(
-  data = country_avg_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
+  data = countryAverageDF %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
   mapping = aes(
     x = reorder(Country, -GDP_Per_Capita),
     y = GDP_Per_Capita) #reorder bars to be descending from highest to lowest
@@ -567,7 +607,7 @@ Although national wealth is not the sole factor determining how long a country's
 
 #Sanitary Expense per GDP line chart - low 3
 ggplot(
-  data = health_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria")),
+  data = healthData %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Sanitary_Expense_Per_GDP,
@@ -586,7 +626,7 @@ ggplot(
 
 #Life expectancy line chart for low 3 countries over time
 ggplot(
-  data = health_df %>% filter(Country=="Nigeria" | Country=="Lesotho" | Country =="Chad"),
+  data = healthData %>% filter(Country=="Nigeria" | Country=="Lesotho" | Country =="Chad"),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
@@ -615,7 +655,7 @@ ggplot(
 
 #Sanitary Expense per GDP line chart - high 3
 ggplot(
-  data = health_df %>% filter(Country %in% c("Japan", "Spain", "Switzerland")),
+  data = healthData %>% filter(Country %in% c("Japan", "Spain", "Switzerland")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Sanitary_Expense_Per_GDP,
@@ -634,7 +674,7 @@ ggplot(
 
 #Life expectancy line chart for high 3 countries over time
 ggplot(
-  data = health_df %>% filter(Country=="Japan" | Country=="Spain" | Country =="Switzerland"),
+  data = healthData %>% filter(Country=="Japan" | Country=="Spain" | Country =="Switzerland"),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
@@ -672,7 +712,7 @@ Although a country can spend significant finances relative to its GDP to improve
 
 #Air Pollution Levels - all countries
 ggplot(
-  data = health_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
+  data = healthData %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Air_Pollution,
@@ -689,7 +729,7 @@ ggplot(
 
 #Safe Water Access Percentage - all countries
 ggplot(
-  data = health_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
+  data = healthData %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria", "Japan", "Spain", "Switzerland")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Safe_Water_Access_Percent,
@@ -720,7 +760,7 @@ Figure 10 and 11's pollution and safe water access visuals reveal considerable i
 
 #Life expectancy and safe water access percentage line chart for low 3
 ggplot(
-  data = health_df %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria")),
+  data = healthData %>% filter(Country %in% c("Chad", "Lesotho", "Nigeria")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
@@ -739,7 +779,7 @@ ggplot(
 
 #Life expectancy and safe water access percentage line chart for high 3
 ggplot(
-  data = health_df %>% filter(Country %in% c("Japan", "Spain", "Switzerland")),
+  data = healthData %>% filter(Country %in% c("Japan", "Spain", "Switzerland")),
   mapping = aes( #select dimensions to plot
     x = Year,
     y = Life_Expectancy,
