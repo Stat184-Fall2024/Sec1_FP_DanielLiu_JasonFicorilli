@@ -33,11 +33,8 @@ healthData <- read.csv(
 
 #Load global regions data set
 urlFileRegion = "https://raw.githubusercontent.com/Stat184-Fall2024/Sec1_FP_DanielLiu_JasonFicorilli/refs/heads/main/data/UNSD_codes.csv"
-dataRegion <- read_csv(
-  url(
-    urlFileRegion
-    )
-  )
+
+dataRegion <- read_csv("../data/UNSD_codes.csv") # Getting the file from the working directory in the GitHub repository
 
 #Select all columns from 2012-2021 table except year and country code
 countryAverageDF <- healthData %>% 
@@ -52,6 +49,17 @@ countryAverageDF <- aggregate( #aggregate columns to be averages from 2012-2021
   FUN = mean
 ) %>%
   rename("Country" = "Group.1")
+
+#Create function to display tables with kable
+displayTable <- function(table) {
+  newTable <- table %>%
+    head() %>% # Displaying just the head for aesthetics
+    knitr::kable() %>% # Styling - using kable striped
+    kable_styling(
+      latex_options = c("striped", "hold_position") # Specifically choosing striped for aesthetic reasons
+    )
+  return(newTable) # Return call
+}
 ```
 
 # Global Health - Where's My Water?
@@ -100,13 +108,10 @@ To better understand the structure of our main dataset, let's first take a look 
 #| echo: false
 
 # View the raw data of our Global Health dataset
-healthData %>% 
-  select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) %>% # Selecting relevant columns to show the first few - since tables can't be too long on a PDF
-  head() %>%
-  knitr::kable() %>% # Styling - using kable striped
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+healthDataRaw <- healthData %>% 
+  select(Country, Country_Code, Year, Fertility_Rate, Urban_Population_Percent) # Selecting relevant columns to show the first few - since tables can't be too long on a PDF 
+  
+healthDataRaw %>% displayTable()
 ```
 
 As we can see in Table 1, the data seems to be decently tidy - at first glance, the columns are well-named, and the numbers don't include any commas that would make computation difficult. The Country_Code column also is helpful for code brevity.
@@ -122,11 +127,7 @@ For this part of the research paper, we are only concerned with Country, Country
 
 # View only the relevant columns from our Global health dataset
 dataWater <- healthData %>% select(Country, Country_Code, Year, Water_Access_Percent, Life_Expectancy) # Selecting only the columns that concern us
-head(dataWater) %>% 
-  knitr::kable() %>% # Kable styling, yet again
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+dataWater %>% displayTable()
 ```
 
 -   regardless, we can move forward with some actual discovery.
@@ -139,7 +140,7 @@ Firstly, it might be beneficial to take a look and see if there's a relationship
 
 ```{r}
 #| label: water-access-percent-versus-life-expectancy
-#| fig-cap: "Scatterplot of Water_Access_Percent Between 2012-2021"
+#| fig-cap: "Scatterplot of Water Access Percent Between 2012-2021"
 #| column: page
 #| echo: false
 #| message: false
@@ -186,13 +187,10 @@ First, let's take a look at our secondary dataset, which includes some region in
 #| message: false
 
 # Viewing the raw data for our UNSD Code Data
-dataRegion %>% 
-  select("Global Code", "Global Name", "Region Code", "Region Name", "Sub-region Code") %>% # Selecting specific columns from the dataset so they are actually visible in a PDF
-  head() %>% # Showing only the head
-  knitr::kable() %>% # Kable styling, yet again
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+dataRegionRaw <- dataRegion %>% 
+  select("Global Code", "Global Name", "Region Code", "Region Name", "Sub-region Code") # Selecting specific columns from the dataset so they are actually visible in a PDF
+
+dataRegionRaw %>% displayTable()
 ```
 
 For the purposes of our data, we'll only be needing the following columns: `Region Name`, and `ISO-alpha3 Code`. Let's filter by just those two columns (visible in Table 4, below).
@@ -208,12 +206,7 @@ For the purposes of our data, we'll only be needing the following columns: `Regi
 dataRegionRelevant <- dataRegion %>% 
   select("Region Name", "ISO-alpha3 Code") # Selecting only the relevant columns from our dataset
 
-dataRegionRelevant %>%
-  head() %>% # Showing only the head for aesthetics
-  knitr::kable() %>% # Kable styling, yet again
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+dataRegionRelevant %>% displayTable()
 ```
 
 Now, we can begin with merging the two datasets via the `ISO-alpha3 Code` and `Country Code` columns, which both mean the same thing.
@@ -232,12 +225,7 @@ dataRegionMerged <- left_join( # Performing a left join to prioritize our Global
   by = join_by("Country_Code" == "ISO-alpha3 Code") # Join condition
 )
 
-dataRegionMerged %>%
-  head() %>% # Viewing only the head for aesthetics
-  knitr::kable() %>% # Kable styling
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+dataRegionMerged %>% displayTable()
 ```
 
 Now, we have our original dataset with all of our necessary information, as well as an extra column that includes each specific country's Region (Table 5). We can use this extra column to help see if its eventually stratification, at all, affects our visualization, or at least, gives us some insight as to what specific Regions MoreLife Ltd. should focus on in their research. Let's begin.
@@ -269,12 +257,7 @@ dataRegionSummary <- dataRegionMerged %>%
     Range = round(Max - Min, 2)
   ) # Rounding all of the values to 2 decimal points for readability
 
-dataRegionSummary %>%
-  head() %>% # Showing only the head for aesthetics
-  knitr::kable() %>% # Kable styling
-  kable_styling(
-    latex_options = c("striped", "hold_position")
-  )
+dataRegionSummary %>% displayTable()
 ```
 
 At first glance, when looking at Figure 7, there is a very large difference among the five regions in almost every metric shown above, so we will discuss each one. First, the **Mean** `Water_Access_Percent` is highest in Europe, and lowest in Africa. They differ by nearly 65 percentage points. America and Asia both have relatively similar mean `Water_Access_Percent`, and Oceania falls slightly lower. The **Median** statistic reflects these observations.
@@ -289,7 +272,7 @@ However, to get an even better understanding of how this information actually af
 
 ```{r}
 #| label: water-access-percent-versus-life-expectancy-region
-#| fig-cap: "Scatterplot of Water_Access_Percent Between 2012-2021, Colored By Region"
+#| fig-cap: "Scatterplot of Water Access Percent vs. Life Expectancy Between 2012-2021, Colored By Region"
 #| column: page
 #| echo: false
 #| message: false
@@ -326,7 +309,7 @@ Other regions such as Africa and the Americas are decently clustered around the 
 
 ```{r}
 #| label: water-access-percent-versus-life-expectancy-ellipse
-#| fig-cap: "Contour Plot of Water_Access_Percent Between 2012-2021, Colored By Region"
+#| fig-cap: "Contour Plot of Water Access Percent vs. Life Expectancy Between 2012-2021, Colored By Region"
 #| column: page
 #| echo: false
 #| message: false
